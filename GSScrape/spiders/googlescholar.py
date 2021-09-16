@@ -31,14 +31,9 @@ class GooglescholarSpider(scrapy.Spider):
             else:
                 title = "".join(temp)
             snippet = "".join(res.xpath('.//*[@class="gs_rs"]//text()').extract())
-            cited = res.xpath('.//a[starts-with(text(),"Cited")]/text()').extract_first()
-            temp = res.xpath('.//a[starts-with(text(),"Related")]/@href').extract_first()
-            related = "https://scholar.google.com" + temp if temp else ""
-            num_versions = res.xpath('.//a[contains(text(),"version")]/text()').extract_first()
             published_data = "".join(res.xpath('.//div[@class="gs_a"]//text()').extract())
             position += 1
-            item = {'title': title, 'link': link, 'cited': cited, 'relatedLink': related, 'position': position,
-                    'numOfVersions': num_versions, 'publishedData': published_data, 'snippet': snippet}
+            item = {'title': title, 'publishedData': published_data, 'snippet': snippet}
             yield item
         next_page = response.xpath('//td[@align="left"]/a/@href').extract_first()
         if next_page:
