@@ -2,7 +2,7 @@ from urllib.parse import urlencode
 
 import scrapy
 
-queries = ['Indoor+Chemistry']
+queries = ['Vance+ME']
 
 
 def get_url(url):
@@ -44,3 +44,4 @@ class GooglescholarSpider(scrapy.Spider):
         if next_page:
             url = "https://scholar.google.com" + next_page
             yield scrapy.Request(get_url(url), callback=self.parse, meta={'position': position})
+
