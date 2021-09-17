@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 import scrapy
 
 queries = ['Vance+ME']
+numpages = 3
 
 
 def get_url(url):
@@ -18,13 +19,13 @@ class GooglescholarSpider(scrapy.Spider):
 
     def start_requests(self):
         for query in queries:
-            url = 'https://scholar.google.com/scholar?' + urlencode({'hl': 'en', 'q': query})
-            yield scrapy.Request(get_url(url), callback=self.parse, meta={'position': 0})
+            for i in range(numpages):
+                url = 'https://scholar.google.com/scholar?' + urlencode({'start': i * 10, 'hl': 'en', 'q': query})
+                yield scrapy.Request(get_url(url), callback=self.parse, meta={'position': 0})
 
     def parse(self, response):
         position = response.meta['position']
         for res in response.xpath('//*[@data-rp]'):
-            link = res.xpath('.//h3/a/@href').extract_first()
             temp = res.xpath('.//h3/a//text()').extract()
             if not temp:
                 title = "[C] " + "".join(res.xpath('.//h3/span[@id]//text()').extract())
